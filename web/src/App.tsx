@@ -1,83 +1,68 @@
-import { MagnifyingGlassPlus } from 'phosphor-react'
-import * as Dialog from '@radix-ui/react-dialog';
-
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+import * as Dialog from '@radix-ui/react-dialog'
+// Components //
+import { CreateAdBanner } from './components/CreateAdBanner'
+// Imagens //
+import LogoESports from '../src/assets/logo.svg'
+// Styles - Tailwind //
 import './styles/main.css'
+import { CreateAdModal } from './components/CreateAdModal'
+import { GameCard } from './components/GameCard'
 
-import logoImg from './assets/Logo.svg'
-import { CreateAdBanner } from './components/CreateAdBanner';
-import { CreateAdModal } from './components/CreateAdModal';
+interface Game {
+  id: string,
+  title: string,
+  bannerUrl: string,
+  _count: {
+    Ads: number
+  }
+}
 
-function App() {  
+function App() {
+  const [games, setGames] = useState<Game[]>([])
+
+  // useEffect(() => {
+  //   axios.get('http://localhost:3333').then(res => {
+  //     setGames(res.data)
+  //   })
+  // }, [])
+
+  useEffect(() => {
+    fetch('http://localhost:3333/games').then(response => response.json()).then(data => {
+      setGames(data)
+    })
+  })
+
   return (
-  <div className='max-w-[1344px] mx-auto flex flex-col items-center my-20'>
-    <img src={logoImg} alt=""/>
+    <div className='max-w-[1344px] mx-auto flex flex-col items-center my-20'>
+      <img src={LogoESports} alt="" />
 
-    <h1 className='text-5xl text-white font-black mt-18'>
-      Seu <span className='text-transparent bg-nlw-gradient bg-clip-text'>duo</span> está aqui.
-    </h1>
+      <h1 className='text-6xl text-white font-black mt-20 nlw-gradient'>
+        Seu <span className='bg-nlw-gradient bg-clip-text text-transparent'>duo</span> está aqui.
+      </h1>
 
-    <div className='grid grid-cols-6 gap-3 mt-8'>
-      <a href='' className='relative rounded-lg overflow-hidden'>
-          <img src='/game-1.png' alt=''/>
+      {/* LISTA DOS GAMES */}
+      <div className='grid grid-cols-6 gap-6 mt-16'>
+        {
+          games.map(game => (
+            <GameCard
+              key={game.id}
+              bannerUrl={game.bannerUrl}
+              name={game.title}
+              adsCount={game._count.Ads} />
+          ))
+        }
+      </div>
 
-          <div className='w-full pt-16 pb-4 px-4 bg-game-gradient absolute bottom-0 left-0 right-0'>
-            <strong className='font-bold text-white block'>League of Legends</strong>
-            <span className='text-zinc-300 text-sm block'>4 anúncios</span>
-          </div>
-      </a> 
+      <Dialog.Root>
+        {/* ANUNCIAR - CONTAINER */}
+        <CreateAdBanner />
+        
+        {/* MODAL - PUBLICAR ANUNCIO */}
+        <CreateAdModal />
+      </Dialog.Root>
 
-      <a href='' className='relative rounded-lg overflow-hidden'>
-          <img src='/game-2.png' alt=''/>
-
-          <div className='w-full pt-16 pb-4 px-4 bg-game-gradient absolute bottom-0 left-0 right-0'>
-            <strong className='font-bold text-white block'>Dota 2</strong>
-            <span className='text-zinc-300 text-sm block'>4 anúncios</span>
-          </div>
-      </a> 
-
-      <a href='' className='relative rounded-lg overflow-hidden'>
-          <img src='/game-3.png' alt=''/>
-
-          <div className='w-full pt-16 pb-4 px-4 bg-game-gradient absolute bottom-0 left-0 right-0'>
-            <strong className='font-bold text-white block'>Counter Strike</strong>
-            <span className='text-zinc-300 text-sm block'>4 anúncios</span>
-          </div>
-      </a> 
-
-      <a href='' className='relative rounded-lg overflow-hidden'>
-          <img src='/game-4.png' alt=''/>
-
-          <div className='w-full pt-16 pb-4 px-4 bg-game-gradient absolute bottom-0 left-0 right-0'>
-            <strong className='font-bold text-white block'>Apex Legends</strong>
-            <span className='text-zinc-300 text-sm block'>4 anúncios</span>
-          </div>
-      </a> 
-
-      <a href='' className='relative rounded-lg overflow-hidden'>
-          <img src='/game-5.png' alt=''/>
-
-          <div className='w-full pt-16 pb-4 px-4 bg-game-gradient absolute bottom-0 left-0 right-0'>
-            <strong className='font-bold text-white block'>Fortnite</strong>
-            <span className='text-zinc-300 text-sm block'>4 anúncios</span>
-          </div>
-      </a> 
-
-      <a href='' className='relative rounded-lg overflow-hidden'>
-          <img src='/game-6.png' alt=''/>
-
-          <div className='w-full pt-16 pb-4 px-4 bg-game-gradient absolute bottom-0 left-0 right-0'>
-            <strong className='font-bold text-white block'>World of Warcraft</strong>
-            <span className='text-zinc-300 text-sm block'>4 anúncios</span>
-          </div>
-      </a> 
-
-    </div>
-
-    <Dialog.Root>
-      <CreateAdBanner/>
-
-      <CreateAdModal/>
-    </Dialog.Root>
     </div>
   )
 }
