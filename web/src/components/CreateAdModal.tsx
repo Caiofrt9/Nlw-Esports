@@ -18,39 +18,44 @@ export function CreateAdModal() {
   const [weekDays, setWeekDays] = useState<string[]>([]);
   const [useVoiceChannel, setUseVoiceChannel] = useState(false);
 
-  // useEffect(() => {
-  //   axios('http://localhost:3333/games').then(response => {
-  //     setGames(response.data)
-  //   })
-  // },[])
+  useEffect(() => {
+    axios('http://localhost:3333/games').then(response => {
+      setGames(response.data)
+      
 
-  // async function handleCreateAd(event: FormEvent) {
-  //   event.preventDefault()
+  console.log(response.data)
 
-  //   const formData = new FormData(event.target as HTMLFormElement)
-  //   const data = Object.fromEntries(formData)
+    })
+  },[])
 
-  //   if(!data.name) {
-  //     return
-  //   }
 
-  //   try{
-  //     axios.post(`http:/localhost:3333/games/${data.game}/ads`, {
-  //       "name": data.name,
-  //       "yearsPlaying": Number(data.yearsPlaying),
-  //       "discord": data.discord,
-  //       "weekDays": weekDays.map(Number),
-  //       "hourStart": data.hourStart,
-  //       "hourEnd": data.hourEnd,
-  //       "useVoiceChannel": useVoiceChannel
-  //   })
+  async function handleCreateAd(event: FormEvent) {
+    event.preventDefault()
+
+    const formData = new FormData(event.target as HTMLFormElement)
+    const data = Object.fromEntries(formData)
+
+    if(!data.name) {
+      return
+    }
+
+    try{
+       await axios.post(`http://localhost:3333/games/${data.game}/ads`, {
+        name: data.name,
+        yearsPlaying: Number(data.yearsPlaying),
+        discord: data.discord,
+        weekDays: weekDays.map(Number),
+        hourStart: data.hourStart,
+        hourEnd: data.hourEnd,
+        useVoiceChannel: useVoiceChannel
+    })
     
-  //   alert('Anúncio criado com sucesso!')
-  //   } catch (err) {
-  //     console.log(err)
-  //     alert("Erro ao criar o anúncio") 
-  //   }
-  // } 
+    alert('Anúncio criado com sucesso!')
+    } catch (err) {
+      console.log(err)
+      alert("Erro ao criar o anúncio") 
+    }
+  } 
 
 
   return (
@@ -60,7 +65,7 @@ export function CreateAdModal() {
       <Dialog.Content className="fixed bg-[#2A2634] py-8 px-10 text-white top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg w-[480px] shadow-lg shadow-black/25">
         <Dialog.Title className="text-3xl font-black">Publique um anúncio</Dialog.Title>
 
-          <form  className="mt-8 flex flex-col gap-4">
+          <form  className="mt-8 flex flex-col gap-4" onSubmit={handleCreateAd}>
             <div className="flex flex-col gap-2">
               <label htmlFor="game" className="font-semibold">Qual o game?</label>
               <select

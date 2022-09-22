@@ -22,17 +22,12 @@ interface Game {
 function App() {
   const [games, setGames] = useState<Game[]>([])
 
-  // useEffect(() => {
-  //   axios.get('http://localhost:3333').then(res => {
-  //     setGames(res.data)
-  //   })
-  // }, [])
-
   useEffect(() => {
-    fetch('http://localhost:3333/games').then(response => response.json()).then(data => {
-      setGames(data)
+    axios('http://localhost:3333/games').then(response => {
+      setGames(response.data)
+      
     })
-  })
+  }, [])
 
   return (
     <div className='max-w-[1344px] mx-auto flex flex-col items-center my-20'>
